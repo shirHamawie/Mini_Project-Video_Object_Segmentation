@@ -1,0 +1,140 @@
+\documentclass[12pt]{article}
+
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{relsize}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{dblfloatfix}
+\usepackage[font=normalsize,labelfont=bf]{caption}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage{listing}
+\usepackage{listings}
+\usepackage{calc}
+\usepackage{xcolor}
+\usepackage{empheq}
+
+
+
+
+\graphicspath{ {../data/} }
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\ltwonorm}[1]{\|#1\|_2^2}
+\newcommand{\tran}[1]{#1^T}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Video Object Segmentation}
+\author{Shir Hamawie \& Nadav Shoham}
+\date{\today}
+
+\begin{document}
+\maketitle
+    \section{Introduction}\label{sec:intro}
+    Video object segmentation is a task in computer vision that involves extracting the foreground objects of interest from a video sequence.
+    One way to perform this task is by a semi-supervised video object segmentation method.
+    This method leverages only one manual annotation in the initial frame of the video, known as the ground-truth mask, and aims to propagate this annotation to subsequent frames in an unsupervised manner. \\
+    In this assignment, we aim to design and implement that, based on Or Dinari's ScStream code as a building block.
+    The ScStream code provides a foundation for processing video streams efficiently. \\
+We will use two videos, one of a walking 3D dinosaur and another of a swimming swan as our test cases, each of them has it's own challenges and characteristics:
+\begin{figure}[h!]
+    \begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[scale=0.4]{images/dinosaur/first_frame_ratio1.0}
+    \end{minipage}
+    \begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[scale=0.4]{images/swan/first_frame_ratio1.0}
+    \end{minipage}
+    \caption{First Frames}
+    \label{fig:first_frames}
+\end{figure}
+
+The remainder of this report is organized as follows:
+    \begin{itemize}
+        \item \underline{Section 2 - } provides a brief overview of Or Dinari's ScStream.
+        \item \underline{Section 3 - } we describe the methodology and architecture in detail.
+        \item \underline{Section 4 - } presents the critical points that most influenced the application.
+        \item \underline{Section 5 - } results and conclusion.
+    \end{itemize}
+
+\pagebreak
+    \section{Background}\label{sec:background}
+        \subsection{DP-Means}\label{subsec:dpmeans}
+DP-Means is a clustering algorithm based on the Dirichlet Process Mixture Model (DPMM).
+It aims to automatically determine the number of clusters in a dataset without requiring a predefined number of clusters.
+However, DP-Means can be computationally expensive, especially for large datasets, as it involves calculating pairwise distances between data points.
+        \subsection{PDC-DP-Mean}\label{subsec:pdc}
+PDC-DP-Means is a method proposed by Or Dinari and Freifeld in 2022 that builds upon the DP-Means algorithm.
+PDC-DP-Means is designed to address the limitations of traditional DP-Means in terms of scalability and computational efficiency.
+PDC-DP-Means introduces parallelism and delayed cluster creation to improve the scalability and efficiency of DP-Means.
+By leveraging parallel computing techniques, PDC-DP-Means can distribute the computational load across multiple threads or machines, enabling faster processing of large datasets.
+This parallelization significantly reduces the runtime of the algorithm.
+Additionally, PDC-DP-Means incorporates delayed cluster creation, which allows for more efficient memory usage.
+Instead of creating clusters for all data points at once, PDC-DP-Means delays the creation of clusters until they are needed.
+This approach reduces the memory requirements of the algorithm, making it more suitable for handling large-scale datasets.
+The combination of parallelism and delayed cluster creation in PDC-DP-Means results in a highly scalable and efficient algorithm for clustering.
+It enables the algorithm to handle large datasets with improved computational speed and reduced memory usage compared to traditional DP-Means.
+        \subsection{ScStream}\label{subsec:scstream}
+ScStream is a method proposed by Or Dinari and Freifeld in 2022 that builds upon the principles of DPMM.
+It is specifically designed for clustering streaming data, where data arrives in a continuous and sequential manner.
+ScStream leverages the sampling-based approach of DPMM to perform clustering on streaming data efficiently.
+The key advantage of ScStream is its ability to handle any exponential family, making it suitable for a wide range of data types.
+It offers a fast implementation that can work in either multi-threaded mode or multi-machine multi-process mode, enabling scalability and parallelization.
+\pagebreak
+
+\section{Methodology}\label{sec:methodology}
+\input{methodology}
+
+\section{Critical points}\label{sec:critical}
+\input{critical_points}
+
+\section{Results \& Conclusion}\label{sec:conclusion}
+The results of our application can be viewed in the added videos, both videos (swan and dinosaur) are 5 seconds long and at 24 frames per second, so they have 120 frames each.
+We also added another example of a giraffe video which is more complex and at 30 frames per second.
+The segmentations are not perfect, but they are good enough to show the potential of the application. \\
+In the dinosaur video, the application successfully segments the dinosaur from the background most of the video, but its legs and tail are sometimes escaping the segmentation.
+This could be because the right leg starts behind the left leg in the ground-truth mask, so it begins at a disadvantage.
+Also, the legs and tail are continuously moving in the depth axis, which might be a challenge for the application. \\
+In the swan video, we also get good results most of the video, this is especially impressive because of the swan's reflection in the water.
+Yet near the end of the video, the swan's front begins to move out of the segmentation, this could be because the decay factor is faster than the swan's movement. \\
+Finally, in the giraffe video, we get a decent segmentation of the giraffe, but the flaws are more noticeable.
+The part of the giraffe's that are not seen in the first frame or that are moving the most are the ones that escape the segmentation.
+Considering the complexity of the video, the results are still impressive. \\
+\\
+In conclusion, we have successfully implemented a semi-supervised video object segmentation application that uses Or Dinari's ScStream code as a building block.
+We detailed the methodology and architecture of our application and discussed the critical points that most influenced the application success.
+\end{document}
