@@ -17,7 +17,7 @@ Scalability: The approach is designed to be efficient and scalable, making it su
 
 https://github.com/shirHamawie/Mini_Project-Video_Object_Segmentation/assets/93772012/747d80f7-6d79-4401-ae7d-3e077b48664a
 
-https://github.com/shirHamawie/Mini_Project-Video_Object_Segmentation/assets/93772012/eec82b5f-f2fb-4086-b5f5-fcdba5305e9f
+https://github.com/shirHamawie/Mini_Project-Video_Object_Segmentation/assets/93772012/9009ac5a-c613-404c-84f3-c6e5c3c4baa5
 
 
 ## License
