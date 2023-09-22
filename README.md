@@ -13,7 +13,9 @@ Unsupervised Segmentation: After the initial frame, the method continues to segm
 
 Scalability: The approach is designed to be efficient and scalable, making it suitable for real-time or batch processing of video data.
 
-# Watch the video!
+## Watch the videos!
+
+https://github.com/shirHamawie/Mini_Project-Video_Object_Segmentation/assets/93772012/747d80f7-6d79-4401-ae7d-3e077b48664a
 https://github.com/shirHamawie/Mini_Project-Video_Object_Segmentation/assets/93772012/eec82b5f-f2fb-4086-b5f5-fcdba5305e9f
 
 
